@@ -40,9 +40,8 @@ int isFull(char chessBoard[MAX_ROW][MAX_COL]){
 void init(char chessBoard[MAX_ROW][MAX_COL]){
 	for (int row = 0; row < MAX_ROW; row++){
 		for (int col = 0; col < MAX_COL; col++){
-			chessBoard[MAX_ROW][MAX_COL] = ' ';//初始化为空格
+			chessBoard[row][col] = ' ';//初始化为空格
 		}
-
 	}
 }
 //3.1.建立打印棋盘函数
@@ -58,15 +57,17 @@ void playerMove(char chessBoard[MAX_ROW][MAX_COL]){
 	while (1){
 		int row = 0;
 		int col = 0;
-		printf("请输入您想要落棋的位置(row col)：");
+		printf("请输入您想要落棋的位置(row col)(坐标范围为【0，2】)：");
 		scanf("%d %d", &row, &col);
 		//判断玩家输入值是否正确
 		if (row < 0 || row >= MAX_ROW || col < 0 || col >= MAX_COL){
 			printf("您输入的位置不在所提供的范围内!\n");
+			continue;
 		}
 		//判断玩家是否将棋子落入正确的位置
 		if (chessBoard[row][col] != ' '){
 			printf("您输入的位置已有棋子!\n");
+			continue;
 		}
 		chessBoard[row][col] = 'x';
 		break;
@@ -79,7 +80,7 @@ void playerMove(char chessBoard[MAX_ROW][MAX_COL]){
 //   返回‘o’表示电脑获胜
 //   返回‘ ’表示胜负未定
 //   返回‘q’表示打成平局
-char iswin(char chessBoard[MAX_ROW][MAX_COL]){
+char isWin(char chessBoard[MAX_ROW][MAX_COL]){
 	//判定所有的行是否连线
 	for (int row = 0; row < MAX_ROW; row++){
 		if ((chessBoard[row][0] != ' ') && (chessBoard[row][0] == chessBoard[row][1])
@@ -112,7 +113,7 @@ void computerMove(char chessBoard[MAX_ROW][MAX_COL]){
 		int row = rand() % MAX_ROW;//rand函数和srand函数结合时间，可以生成小于MAX_ROW的随机值
 		int col = rand()% MAX_COL;//同上，对应的时间函数在main中引用
 		//注意防止落入已经含有棋子的地方
-		if (chessBoard[row][col] == ' '){
+		if (chessBoard[row][col]!=' '){
 			continue;
 		}
 		chessBoard[row][col] = 'o';
@@ -148,17 +149,17 @@ void game(){
 		//4.1.玩家落子
 		playerMove(chessBoard);
 		//5.判定胜负关系
-		winner = iswin(chessBoard);
+		winner = isWin(chessBoard);
 		//注意返回值属于棋盘已满时需要跳出循环
 		if (winner != ' '){
 			break;
 		}
-		printChessBoard(chessBoard);
+		
 		//6.电脑随机落子
 		computerMove(chessBoard);
-		printChessBoard(chessBoard);
+
 		//7.判定胜负关系
-		winner = iswin(chessBoard);
+		winner = isWin(chessBoard);
 		//注意返回值属于棋盘已满时需要跳出循环
 		if (winner != ' '){
 			break;
@@ -175,6 +176,40 @@ void game(){
 					printf("哈哈哈，平局啦！\n");
 				}
 			}
+//void game() {
+//	// 1. 创建棋盘并初始化
+//	char chessBoard[MAX_ROW][MAX_COL] = { 0 };
+//	init(chessBoard);
+//	char winner = ' ';
+//	while (1) {
+//		// 2. 打印棋盘
+//		printChessBoard(chessBoard);
+//		// 3. 玩家落子(玩家输入行列坐标的方式来落子)
+//		playerMove(chessBoard);
+//		// 4. 判定胜负关系
+//		winner = isWin(chessBoard);
+//		if (winner != ' ') {
+//			break;
+//		}
+//		// 5. 电脑落子(随机位置落子) 
+//		computerMove(chessBoard);
+//		// 6. 判定胜负关系
+//		winner = isWin(chessBoard);
+//		if (winner != ' ') {
+//			break;
+//		}
+//	}
+//	printChessBoard(chessBoard);
+//	if (winner == 'x') {
+//		printf("恭喜您, 您赢了!\n");
+//	}
+//	else if (winner == 'o') {
+//		printf("很遗憾, 您连人工智障都下不过!\n");
+//	}
+//	else {
+//		printf("很遗憾, 您和人工智障五五开!\n");
+//	}
+//}
 
 int main(){
 	srand((unsigned int)time(0));//srand和rand函数结合时间，生成随机值
@@ -186,6 +221,7 @@ int main(){
 		}
 		else if (choice == 0){
 			printf("结束游戏，再见！\n");
+			break;
 		}
 		else{
 			printf("您的输入形式有误，请输入0或1！\n");
